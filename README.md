@@ -15,11 +15,11 @@ Built to practice the exact workflow described in observability/SRE trainee role
 
 ---
 
-## Why this project
+## 📌 Why this project
 
 Most tutorials cover Splunk *or* Datadog in isolation. In real SRE/Observability teams, both tools are commonly used side by side — Splunk for deep log search (SPL) and long-term log retention, Datadog for real-time metrics, APM, and alerting. This repo shows both working against the **same underlying log stream**, so the SPL queries and the Datadog monitors can be directly compared.
 
-## Architecture
+## 📌 Architecture
 
 ```
                      ┌───────────────────────┐
@@ -47,7 +47,7 @@ Most tutorials cover Splunk *or* Datadog in isolation. In real SRE/Observability
                     + log_analyzer.py (local SLO checks)
 ```
 
-## Repository Structure
+## 📌 Repository Structure
 
 ```
 .

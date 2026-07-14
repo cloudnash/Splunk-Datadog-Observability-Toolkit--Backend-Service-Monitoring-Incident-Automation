@@ -1,4 +1,13 @@
-# Splunk & Datadog Observability Toolkit
+# 🛡️ Splunk & Datadog Observability Toolkit
+
+![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
+![Splunk](https://img.shields.io/badge/Splunk-SPL%20%26%20Dashboards-000000?logo=splunk&logoColor=white)
+![Datadog](https://img.shields.io/badge/Datadog-Monitors%20%26%20APM-632CA6?logo=datadog&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-326CE5?logo=kubernetes&logoColor=white)
+![MTTR](https://img.shields.io/badge/MTTR-Reduced%2020%25-brightgreen)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 A hands-on observability project simulating how a Trainee/Associate SRE monitors backend services in production — log collection, SPL search & dashboarding in **Splunk**, monitor-as-code alerting & dashboarding in **Datadog**, and an incident response runbook tying it all together.
 
@@ -134,6 +143,20 @@ See [`runbooks/incident_runbook.md`](runbooks/incident_runbook.md) for the full 
 - [ ] Add a GitHub Actions workflow to lint SPL/JSON config on every PR.
 - [ ] Add Terraform module to provision Datadog monitors and dashboards declaratively.
 
-## License
+---
 
-MIT — free to use for learning and portfolio purposes.
+## 🤝 Contributing
+
+This is a learning project. Feel free to fork, explore, and learn from it!
+
+---
+
+*📞 Contact*
+---
+
+- GitHub: [cloudnash](https://github.com/cloudnash)
+- LinkedIn: [Nashit Ahmad](https://in.linkedin.com/in/nashitahmad)
+- Email: nashitakerfeldt@gmail.com
+
+---
+

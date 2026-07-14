@@ -1,0 +1,57 @@
+version: "3.8"
+
+# Local, reproducible observability demo stack.
+# Brings up a Splunk instance and a Datadog Agent (with a dummy API
+# key for local log-collection testing) alongside a log generator
+# so the dashboards and SPL searches in this repo can be exercised
+# without a production workload.
+#
+# Usage:
+#   docker compose up -d
+#   docker compose logs -f log-generator
+#
+# Splunk Web UI: http://localhost:8000  (admin / Chang3dPassw0rd!)
+
+services:
+  splunk:
+    image: splunk/splunk:latest
+    container_name: splunk
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_PASSWORD=Chang3dPassw0rd!
+    ports:
+      - "8000:8000"   # Splunk Web
+      - "8088:8088"   # HTTP Event Collector
+    volumes:
+      - ./sample-logs:/var/log/app
+      - ./splunk:/opt/splunk/etc/apps/search/local
+
+  datadog-agent:
+    image: gcr.io/datadoghq/agent:latest
+    container_name: datadog-agent
+    environment:
+      - DD_API_KEY=${DD_API_KEY:-dummy_api_key_for_local_testing}
+      - DD_SITE=datadoghq.com
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      - DD_APM_ENABLED=true
+    volumes:
+      - ./sample-logs:/var/log/app:ro
+      - ./datadog/agent_log_collection.yaml:/etc/datadog-agent/conf.d/app_logs.d/conf.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+
+  log-generator:
+    image: python:3.12-slim
+    container_name: log-generator
+    working_dir: /app
+    volumes:
+      - ./scripts:/app/scripts
+      - ./sample-logs:/app/sample-logs
+    command: >
+      python3 scripts/log_generator.py --stream --error-rate 0.07
+      --out sample-logs/app.log --interval 1
+    depends_on:
+      - splunk
+      - datadog-agent

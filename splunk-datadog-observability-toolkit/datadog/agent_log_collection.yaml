@@ -1,0 +1,29 @@
+# datadog/conf.d/app_logs.d/conf.yaml
+# ----------------------------------------------------------------
+# Datadog Agent log collection configuration for the sample app.
+# Place under conf.d/app_logs.d/conf.yaml on the Agent host and
+# enable log collection in datadog.yaml (logs_enabled: true).
+# ----------------------------------------------------------------
+
+logs:
+  - type: file
+    path: /var/log/app/app.log
+    service: sample-app
+    source: json_logs
+    sourcecategory: sourcecode
+    tags:
+      - env:prod
+      - team:sre
+
+# JSON logs are parsed automatically by the Agent's JSON log
+# processing pipeline. The following standard attributes are
+# expected by the Log Explorer facets and the dashboard queries
+# in datadog/dashboard.json:
+#
+#   timestamp     -> mapped to Datadog's @timestamp
+#   level         -> mapped to status (info/warn/error)
+#   service       -> facet: @service
+#   endpoint      -> facet: @endpoint
+#   status_code   -> facet: @status_code
+#   latency_ms    -> facet: @latency_ms (used for latency metrics via log-based metrics)
+#   trace_id      -> correlates logs with APM traces when tracing is enabled

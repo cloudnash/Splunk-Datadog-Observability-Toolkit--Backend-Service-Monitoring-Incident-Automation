@@ -1,0 +1,74 @@
+{
+  "title": "Service Health & Delivery Overview",
+  "description": "Import via Dashboards > New Dashboard > Import Dashboard JSON. Correlates request rate, error rate, latency, and infra metrics in one view.",
+  "layout_type": "ordered",
+  "widgets": [
+    {
+      "definition": {
+        "title": "Request Rate by Service",
+        "type": "timeseries",
+        "requests": [
+          { "q": "sum:app.request.count{*} by {service}.as_rate()", "display_type": "line" }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "title": "Error Rate % by Service",
+        "type": "timeseries",
+        "requests": [
+          { "q": "sum:app.request.errors{*} by {service}.as_rate() / sum:app.request.count{*} by {service}.as_rate() * 100", "display_type": "line" }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "title": "p50 / p95 / p99 Latency (ms)",
+        "type": "timeseries",
+        "requests": [
+          { "q": "p50:app.request.latency{*}", "display_type": "line" },
+          { "q": "p95:app.request.latency{*}", "display_type": "line" },
+          { "q": "p99:app.request.latency{*}", "display_type": "line" }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "title": "Host CPU / Memory",
+        "type": "timeseries",
+        "requests": [
+          { "q": "avg:system.cpu.user{*} by {host}", "display_type": "line" },
+          { "q": "avg:system.mem.used{*} by {host}", "display_type": "line" }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "title": "Kubernetes Pod Status",
+        "type": "query_table",
+        "requests": [
+          { "q": "sum:kubernetes.pods.running{*} by {kube_deployment}" },
+          { "q": "sum:kubernetes.pods.restarts{*} by {kube_deployment}" }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "title": "Deployment Frequency (DORA)",
+        "type": "timeseries",
+        "requests": [
+          { "q": "sum:ci.deploy.count{env:prod}.as_count()", "display_type": "bars" }
+        ]
+      }
+    },
+    {
+      "definition": {
+        "title": "Active Monitors Status",
+        "type": "manage_status",
+        "query": "tag:(team:sre)",
+        "sort": "status,asc",
+        "count": 20
+      }
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+<form version="1.1" theme="dark">
+  <label>Service Health Overview</label>
+  <description>Error rate, latency, and volume across services — import via Settings &gt; User Interface &gt; Dashboards &gt; New Dashboard &gt; Source</description>
+
+  <fieldset submitButtonLabel="Submit" autoRun="true">
+    <input type="time" token="time_tok">
+      <label>Time Range</label>
+      <default>
+        <earliest>-15m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="service_tok">
+      <label>Service</label>
+      <choice value="*">All</choice>
+      <choice value="auth-service">auth-service</choice>
+      <choice value="payments-service">payments-service</choice>
+      <choice value="orders-service">orders-service</choice>
+      <choice value="notifications-service">notifications-service</choice>
+      <default>*</default>
+    </input>
+  </fieldset>
+
+  <row>
+    <panel>
+      <title>Error Rate % by Service</title>
+      <table>
+        <search>
+          <query>index=app_logs sourcetype=json_logs service=$service_tok$
+| eval is_error=if(status_code&gt;=400, 1, 0)
+| stats count as total, sum(is_error) as errors by service
+| eval error_rate_pct=round((errors/total)*100, 2)
+| sort -error_rate_pct</query>
+          <earliest>$time_tok.earliest$</earliest>
+          <latest>$time_tok.latest$</latest>
+        </search>
+      </table>
+    </panel>
+    <panel>
+      <title>Latency p50 / p95 (ms)</title>
+      <table>
+        <search>
+          <query>index=app_logs sourcetype=json_logs service=$service_tok$
+| stats perc50(latency_ms) as p50_ms, perc95(latency_ms) as p95_ms by service
+| sort -p95_ms</query>
+          <earliest>$time_tok.earliest$</earliest>
+          <latest>$time_tok.latest$</latest>
+        </search>
+      </table>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Request Volume Over Time</title>
+      <chart>
+        <search>
+          <query>index=app_logs sourcetype=json_logs service=$service_tok$
+| timechart span=1m count by service</query>
+          <earliest>$time_tok.earliest$</earliest>
+          <latest>$time_tok.latest$</latest>
+        </search>
+        <option name="charting.chart">line</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Top Failing Endpoints</title>
+      <table>
+        <search>
+          <query>index=app_logs sourcetype=json_logs service=$service_tok$ status_code&gt;=400
+| stats count by endpoint, status_code
+| sort -count
+| head 10</query>
+          <earliest>$time_tok.earliest$</earliest>
+          <latest>$time_tok.latest$</latest>
+        </search>
+      </table>
+    </panel>
+  </row>
+</form>

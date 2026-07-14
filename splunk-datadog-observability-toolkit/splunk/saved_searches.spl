@@ -1,0 +1,55 @@
+# Splunk Saved Searches (SPL)
+# ----------------------------------------------------------------
+# Source data: JSON-line application logs from sample-logs/app.log
+# (or any index fed by the Splunk Universal Forwarder / HEC token
+# pointed at this log format). Import these as Saved Searches under
+# Settings > Searches, Reports, and Alerts, or paste directly into
+# the Splunk Search bar.
+# ----------------------------------------------------------------
+
+# 1. Overall error rate by service (last 15 minutes)
+# Powers the "Error Rate %" panel on the Splunk dashboard.
+index=app_logs sourcetype=json_logs earliest=-15m
+| eval is_error=if(status_code>=400, 1, 0)
+| stats count as total, sum(is_error) as errors by service
+| eval error_rate_pct=round((errors/total)*100, 2)
+| sort -error_rate_pct
+
+
+# 2. p95 latency by service (last 15 minutes)
+# Powers the "Latency p95" panel on the Splunk dashboard.
+index=app_logs sourcetype=json_logs earliest=-15m
+| stats perc95(latency_ms) as p95_latency_ms, perc50(latency_ms) as p50_latency_ms by service
+| sort -p95_latency_ms
+
+
+# 3. Top failing endpoints (last 1 hour)
+# Used during incident triage to identify the noisiest endpoint.
+index=app_logs sourcetype=json_logs status_code>=400 earliest=-1h
+| stats count by endpoint, status_code
+| sort -count
+| head 20
+
+
+# 4. 5xx spike detection (alert-ready search)
+# Save this as a Splunk Alert: trigger when result count > 0,
+# scheduled to run every 5 minutes, cron: */5 * * * *
+index=app_logs sourcetype=json_logs status_code>=500 earliest=-5m
+| stats count as error_count by service
+| where error_count > 10
+
+
+# 5. MTTR helper — time between first ERROR and first subsequent INFO
+# "request completed" for the same service, used to approximate
+# recovery time during a monitored incident window.
+index=app_logs sourcetype=json_logs (level=ERROR OR message="request completed") earliest=-24h
+| transaction service startswith="level=ERROR" endswith="message=\"request completed\"" maxspan=30m
+| table service, duration, _time
+| sort -_time
+
+
+# 6. Request volume trend (deployment frequency proxy)
+# Bucketed request counts, useful for correlating traffic shifts
+# with deploy events pulled from CI/CD (Jenkins/GitLab) logs.
+index=app_logs sourcetype=json_logs earliest=-24h
+| timechart span=1h count by service

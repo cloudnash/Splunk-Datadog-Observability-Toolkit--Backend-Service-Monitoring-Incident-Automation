@@ -1,0 +1,54 @@
+{
+  "_comment": "Monitor-as-code definitions for Datadog. Deploy with: datadog-ci or the Datadog API (POST /api/v1/monitor), or via the Terraform datadog_monitor resource. Thresholds mirror scripts/log_analyzer.py so alert logic can be unit tested locally before being pushed to Datadog.",
+
+  "monitors": [
+    {
+      "name": "[Prod] High Error Rate - {{service.name}}",
+      "type": "log alert",
+      "query": "logs(\"service:* status_code:>=400\").index(\"main\").rollup(\"count\").by(\"service\").last(\"5m\") > 5",
+      "message": "{{#is_alert}}Error rate for {{service.name}} exceeded 5% over the last 5 minutes. Check the Service Health dashboard and recent deploys.{{/is_alert}}\n{{#is_recovery}}Error rate for {{service.name}} has recovered.{{/is_recovery}}\n@slack-sre-oncall",
+      "tags": ["team:sre", "env:prod", "source:app-logs"],
+      "options": {
+        "thresholds": { "critical": 5, "warning": 3 },
+        "notify_no_data": true,
+        "no_data_timeframe": 10,
+        "renotify_interval": 30,
+        "evaluation_delay": 60
+      }
+    },
+    {
+      "name": "[Prod] p95 Latency Breach - {{service.name}}",
+      "type": "metric alert",
+      "query": "avg(last_5m):p95:app.request.latency{*} by {service} > 500",
+      "message": "{{#is_alert}}p95 latency for {{service.name}} exceeded 500ms. Investigate downstream dependencies (DB, cache, third-party APIs).{{/is_alert}}\n@slack-sre-oncall",
+      "tags": ["team:sre", "env:prod", "source:apm"],
+      "options": {
+        "thresholds": { "critical": 500, "warning": 350 },
+        "notify_no_data": false,
+        "renotify_interval": 30
+      }
+    },
+    {
+      "name": "[Prod] Host Unreachable / No Data - {{host.name}}",
+      "type": "metric alert",
+      "query": "avg(last_10m):avg:system.cpu.idle{*} by {host} < 1",
+      "message": "{{#is_alert}}Host {{host.name}} is reporting no data or CPU idle time near 0%. Possible host-down or resource exhaustion.{{/is_alert}}\n@pagerduty-sre",
+      "tags": ["team:sre", "env:prod", "source:infra"],
+      "options": {
+        "thresholds": { "critical": 1 },
+        "notify_no_data": true,
+        "no_data_timeframe": 5
+      }
+    },
+    {
+      "name": "[Prod] Kubernetes Pod CrashLoopBackOff",
+      "type": "event alert",
+      "query": "events('sources:kubernetes \"CrashLoopBackOff\"').rollup('count').last('5m') > 0",
+      "message": "{{#is_alert}}One or more pods are in CrashLoopBackOff. Run `kubectl describe pod` and check the incident runbook.{{/is_alert}}\n@slack-sre-oncall",
+      "tags": ["team:sre", "env:prod", "source:kubernetes"],
+      "options": {
+        "thresholds": { "critical": 0 }
+      }
+    }
+  ]
+}

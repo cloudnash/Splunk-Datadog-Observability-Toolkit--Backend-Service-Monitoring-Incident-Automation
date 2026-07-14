@@ -31,12 +31,12 @@ Most tutorials cover Splunk *or* Datadog in isolation. In real SRE/Observability
                  ┌───────────────┴────────────────┐
                  ▼                                ▼
         ┌────────────────┐               ┌──────────────────┐
-        │     Splunk      │               │  Datadog Agent    │
-        │  (HEC / file     │               │ (log collection,  │
-        │   monitoring)    │               │  APM, metrics)    │
-        └───────┬─────────┘               └─────────┬─────────┘
-                │                                    │
-                ▼                                    ▼
+        │     Splunk     │               │  Datadog Agent   │
+        │  (HEC / file   │               │ (log collection, │
+        │   monitoring)   │              │  APM, metrics)   │
+        └───────┬─────────┘               ─────────┬─────────┘
+                │                                  │
+                ▼                                  ▼
       Splunk SPL Searches                  Datadog Monitors
       + XML Dashboard                      + JSON Dashboard
       (splunk/)                            (datadog/)

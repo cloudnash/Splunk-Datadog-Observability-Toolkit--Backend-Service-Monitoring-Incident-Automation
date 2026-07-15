@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: observability-demo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-generator
+  namespace: observability-demo
+  labels:
+    app: log-generator
+    team: sre
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: log-generator
+  template:
+    metadata:
+      labels:
+        app: log-generator
+        team: sre
+      annotations:
+        # Tells the Datadog Agent how to parse/tag this container's logs.
+        ad.datadoghq.com/log-generator.logs: '[{"source":"json_logs","service":"sample-app"}]'
+    spec:
+      containers:
+        - name: log-generator
+          image: log-generator:local
+          imagePullPolicy: Never   # image is loaded directly into minikube, not pulled from a registry
+          args: ["--error-rate", "0.10", "--interval", "1"]
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          livenessProbe:
+            exec:
+              command: ["pgrep", "-f", "log_generator.py"]
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            exec:
+              command: ["pgrep", "-f", "log_generator.py"]
+            initialDelaySeconds: 5
+            periodSeconds: 15

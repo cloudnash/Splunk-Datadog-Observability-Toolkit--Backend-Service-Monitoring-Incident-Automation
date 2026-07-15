@@ -1,3 +1,11 @@
+<<<<<<< HEAD
 app/
 k8s/
 
+=======
+__pycache__/
+*.pyc
+.env
+sample-logs/*.log
+!sample-logs/.gitkeep
+>>>>>>> 0bdf9e1 (new file added)

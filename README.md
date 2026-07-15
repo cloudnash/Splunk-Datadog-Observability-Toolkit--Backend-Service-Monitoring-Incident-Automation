@@ -1,8 +1,6 @@
-<<<<<<< HEAD
+
 # 🛡️ Splunk & Datadog Observability Toolkit
 =======
-# Splunk & Datadog Observability Toolkit
->>>>>>> 0bdf9e1 (new file added)
 
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
 ![Splunk](https://img.shields.io/badge/Splunk-SPL%20%26%20Dashboards-000000?logo=splunk&logoColor=white)
@@ -19,7 +17,6 @@ Built to practice the exact workflow described in observability/SRE trainee role
 
 ---
 
-<<<<<<< HEAD
 ## 📌 Why this project
 
 Most tutorials cover Splunk *or* Datadog in isolation. In real SRE/Observability teams, both tools are commonly used side by side — Splunk for deep log search (SPL) and long-term log retention, Datadog for real-time metrics, APM, and alerting. This repo shows both working against the **same underlying log stream**, so the SPL queries and the Datadog monitors can be directly compared.
@@ -31,7 +28,6 @@ Most tutorials cover Splunk *or* Datadog in isolation. In real SRE/Observability
 Most tutorials cover Splunk *or* Datadog in isolation. In real SRE/Observability teams, both tools are commonly used side by side — Splunk for deep log search (SPL) and long-term log retention, Datadog for real-time metrics, APM, and alerting. This repo shows both working against the **same underlying log stream**, so the SPL queries and the Datadog monitors can be directly compared.
 
 ## Architecture
->>>>>>> 0bdf9e1 (new file added)
 
 ```
                      ┌───────────────────────┐
@@ -68,11 +64,11 @@ Most tutorials cover Splunk *or* Datadog in isolation. In real SRE/Observability
                     + log_analyzer.py (local SLO checks)
 ```
 
-<<<<<<< HEAD
+
 ## 📌 Repository Structure
 =======
 ## Repository Structure
->>>>>>> 0bdf9e1 (new file added)
+
 
 ```
 .
@@ -168,7 +164,7 @@ See [`runbooks/incident_runbook.md`](runbooks/incident_runbook.md) for the full 
 - [ ] Add a GitHub Actions workflow to lint SPL/JSON config on every PR.
 - [ ] Add Terraform module to provision Datadog monitors and dashboards declaratively.
 
-<<<<<<< HEAD
+
 ---
 
 ## 🤝 Contributing
@@ -184,10 +180,3 @@ This is a learning project. Feel free to fork, explore, and learn from it!
 - LinkedIn: [Nashit Ahmad](https://in.linkedin.com/in/nashitahmad)
 - Email: nashitakerfeldt@gmail.com
 
----
-
-=======
-## License
-
-MIT — free to use for learning and portfolio purposes.
->>>>>>> 0bdf9e1 (new file added)

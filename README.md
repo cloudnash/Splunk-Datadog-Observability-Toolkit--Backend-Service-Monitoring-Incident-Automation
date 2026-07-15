@@ -1,6 +1,5 @@
 
 # 🛡️ Splunk & Datadog Observability Toolkit
----
 
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
 ![Splunk](https://img.shields.io/badge/Splunk-SPL%20%26%20Dashboards-000000?logo=splunk&logoColor=white)

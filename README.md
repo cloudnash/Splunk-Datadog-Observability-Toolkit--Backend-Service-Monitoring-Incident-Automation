@@ -1,6 +1,6 @@
 
 # 🛡️ Splunk & Datadog Observability Toolkit
-=======
+---
 
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
 ![Splunk](https://img.shields.io/badge/Splunk-SPL%20%26%20Dashboards-000000?logo=splunk&logoColor=white)
@@ -22,7 +22,7 @@ Built to practice the exact workflow described in observability/SRE trainee role
 Most tutorials cover Splunk *or* Datadog in isolation. In real SRE/Observability teams, both tools are commonly used side by side — Splunk for deep log search (SPL) and long-term log retention, Datadog for real-time metrics, APM, and alerting. This repo shows both working against the **same underlying log stream**, so the SPL queries and the Datadog monitors can be directly compared.
 
 ## 📌 Architecture
-=======
+
 ## Why this project
 
 Most tutorials cover Splunk *or* Datadog in isolation. In real SRE/Observability teams, both tools are commonly used side by side — Splunk for deep log search (SPL) and long-term log retention, Datadog for real-time metrics, APM, and alerting. This repo shows both working against the **same underlying log stream**, so the SPL queries and the Datadog monitors can be directly compared.
